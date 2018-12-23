@@ -1,0 +1,24 @@
+PATH
+  remote: .
+  specs:
+    rubybc (0.1.0)
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    bitcoin (0.2.0)
+      bitcoin-ruby
+    bitcoin-ruby (0.0.18)
+    rake (10.5.0)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  bitcoin
+  bundler (~> 1.17)
+  rake (~> 10.0)
+  rubybc!
+
+BUNDLED WITH
+   1.17.2
