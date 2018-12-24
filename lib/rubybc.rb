@@ -43,13 +43,14 @@ module Rubybc
     # Get an UTXO
     # +min_confirmation+: minimum confirmation for transactions; Transactions which have more confirmation count than this value will be chosen and returned.
     # +min_amount+: minimum amount for transactions; Transactions which have more BTC than this value will be chosen and returned; Default value is 0.0001 (10000 satoshi).
-    def get_utxo(min_confirmation=200, min_amount=0.0001)
+    def get_utxo(min_confirmation=100, min_amount=0.0001)
       txs = @rpc.listunspent(min_confirmation)
       for tx in txs
         if tx['amount'] > min_amount then
           return tx
         end
       end
+      return nil
     end
     ##
     # Upload string to the bitcoin network.
@@ -60,11 +61,16 @@ module Rubybc
     def public_upload_string(data, logging_address_as_hex, txfee=3000)
       Bitcoin::network = @network
       utxo = get_utxo()
+      if utxo == nil then
+        raise InsufficientConfirmationError
+      end
       destination_address = Bitcoin::encode_segwit_address(0, logging_address_as_hex) # is "ESPKEN_VTUBER_KOSEKI" (20 bytes) in hex
       change_address = @rpc.getnewaddress('', 'bech32')
       rawtx = @rpc.createrawtransaction([utxo], {'data' => data.unpack('H*')[0], destination_address => 0, change_address => utxo['amount'] - 0.00000001*txfee})
       signedtx = @rpc.signrawtransactionwithwallet(rawtx)['hex']
       @rpc.sendrawtransaction(signedtx)
     end
+
+    class InsufficientConfirmationError < RuntimeError; end
   end
 end
