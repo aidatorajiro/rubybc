@@ -58,7 +58,7 @@ module Rubybc
     # +logging_address_as_hex+: address used to mark transactions;
     # +txfee+: the total transaction fee in satoshis; Default value is 3000.
     # e.g. if you want to upload 100 bytes string at the tx fee rate of 10 bytes/satoshi, you will have to specify +txfee+ to (200 + 100)*10 = 3000.
-    def create_upload_string_transaction(data, logging_address_as_hex, txfee=3000)
+    def create_public_upload_string_transaction(data, logging_address_as_hex, txfee=3000)
       Bitcoin::network = @network
       utxo = get_utxo()
       destination_address = Bitcoin::encode_segwit_address(0, logging_address_as_hex) # is "ESPKEN_VTUBER_KOSEKI" (20 bytes) in hex
@@ -73,8 +73,8 @@ module Rubybc
     # +txfee+: the total transaction fee in satoshis; Default value is 3000.
     # Tx bytes will be around (200 + +data+.length).
     # e.g. if you want to upload 100 bytes string at the tx fee rate of 10 bytes/satoshi, you will have to specify +txfee+ to (200 + 100)*10 = 3000.
-    def upload_string(data, logging_address_as_hex, txfee=3000)
-      @rpc.sendrawtransaction(create_upload_string_transaction(data, logging_address_as_hex, txfee))
+    def public_upload_string(data, logging_address_as_hex, txfee=3000)
+      @rpc.sendrawtransaction(create_public_upload_string_transaction(data, logging_address_as_hex, txfee))
     end
   end
 end
