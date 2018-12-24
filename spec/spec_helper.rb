@@ -1,5 +1,5 @@
 require "bundler/setup"
-require "rubybcttt"
+require "rubybc"
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
