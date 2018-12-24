@@ -62,8 +62,8 @@ module Rubybc
       Bitcoin::network = @network
       utxo = get_utxo()
       destination_address = Bitcoin::encode_segwit_address(0, logging_address_as_hex) # is "ESPKEN_VTUBER_KOSEKI" (20 bytes) in hex
-      charge_address = @rpc.getnewaddress('', 'bech32')
-      rawtx = @rpc.createrawtransaction([utxo], {'data' => data.unpack('H*')[0], destination_address => 0, charge_address => utxo['amount'] - 0.00000001*txfee})
+      change_address = @rpc.getnewaddress('', 'bech32')
+      rawtx = @rpc.createrawtransaction([utxo], {'data' => data.unpack('H*')[0], destination_address => 0, change_address => utxo['amount'] - 0.00000001*txfee})
       signedtx = @rpc.signrawtransactionwithwallet(rawtx)['hex']
       return signedtx
     end
