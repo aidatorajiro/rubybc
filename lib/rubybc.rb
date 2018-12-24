@@ -73,8 +73,8 @@ module Rubybc
     # +txfee+: the total transaction fee in satoshis; Default value is 3000.
     # Tx bytes will be around (200 + +data+.length).
     # e.g. if you want to upload 100 bytes string at the tx fee rate of 10 bytes/satoshi, you will have to specify +txfee+ to (200 + 100)*10 = 3000.
-    def upload_string(data, txfee=3000)
-      @rpc.sendrawtransaction(create_upload_string_transaction(data, txfee))
+    def upload_string(data, logging_address_as_hex, txfee=3000)
+      @rpc.sendrawtransaction(create_upload_string_transaction(data, logging_address_as_hex, txfee))
     end
   end
 end
