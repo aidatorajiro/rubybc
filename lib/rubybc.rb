@@ -52,29 +52,19 @@ module Rubybc
       end
     end
     ##
-    # Create a transaction containing arbitary string data.
-    # No broadcast version for upload_string.
-    # +data+: string data to upload
-    # +logging_address_as_hex+: address used to mark transactions;
-    # +txfee+: the total transaction fee in satoshis; Default value is 3000.
-    # e.g. if you want to upload 100 bytes string at the tx fee rate of 10 bytes/satoshi, you will have to specify +txfee+ to (200 + 100)*10 = 3000.
-    def create_public_upload_string_transaction(data, logging_address_as_hex, txfee=3000)
-      Bitcoin::network = @network
-      utxo = get_utxo()
-      destination_address = Bitcoin::encode_segwit_address(0, logging_address_as_hex) # is "ESPKEN_VTUBER_KOSEKI" (20 bytes) in hex
-      change_address = @rpc.getnewaddress('', 'bech32')
-      rawtx = @rpc.createrawtransaction([utxo], {'data' => data.unpack('H*')[0], destination_address => 0, change_address => utxo['amount'] - 0.00000001*txfee})
-      signedtx = @rpc.signrawtransactionwithwallet(rawtx)['hex']
-      return signedtx
-    end
-    ##
     # Upload string to the bitcoin network.
     # +data+: string data to upload
     # +txfee+: the total transaction fee in satoshis; Default value is 3000.
     # Tx bytes will be around (200 + +data+.length).
     # e.g. if you want to upload 100 bytes string at the tx fee rate of 10 bytes/satoshi, you will have to specify +txfee+ to (200 + 100)*10 = 3000.
     def public_upload_string(data, logging_address_as_hex, txfee=3000)
-      @rpc.sendrawtransaction(create_public_upload_string_transaction(data, logging_address_as_hex, txfee))
+      Bitcoin::network = @network
+      utxo = get_utxo()
+      destination_address = Bitcoin::encode_segwit_address(0, logging_address_as_hex) # is "ESPKEN_VTUBER_KOSEKI" (20 bytes) in hex
+      change_address = @rpc.getnewaddress('', 'bech32')
+      rawtx = @rpc.createrawtransaction([utxo], {'data' => data.unpack('H*')[0], destination_address => 0, change_address => utxo['amount'] - 0.00000001*txfee})
+      signedtx = @rpc.signrawtransactionwithwallet(rawtx)['hex']
+      @rpc.sendrawtransaction(signedtx)
     end
   end
 end
